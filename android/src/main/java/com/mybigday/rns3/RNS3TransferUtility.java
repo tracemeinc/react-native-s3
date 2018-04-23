@@ -157,19 +157,28 @@ public class RNS3TransferUtility extends ReactContextBaseJavaModule {
         break;
       // TODO: support accountId, unauthRoleArn, authRoleArn
       case COGNITO:
+        CognitoCredentialsProvider cognitoCredentialsProvider = null;
         String cognitoRegion = (String) credentialsOptions.get("cognito_region");
         if (!(Boolean) credentialsOptions.get("caching")) {
-          credentialsProvider = new CognitoCredentialsProvider(
+          cognitoCredentialsProvider = new CognitoCredentialsProvider(
             (String) credentialsOptions.get("identity_pool_id"),
             Regions.fromName(cognitoRegion)
           );
         } else {
-          credentialsProvider = new CognitoCachingCredentialsProvider(
+          cognitoCredentialsProvider = new CognitoCachingCredentialsProvider(
             context,
             (String) credentialsOptions.get("identity_pool_id"),
             Regions.fromName(cognitoRegion)
           );
         }
+        String cognitoCredProvider = (String) credentialsOptions.get("cognito_cred_provider");
+        String cognitoToken = (String) credentialsOptions.get("cognito_token");
+        if (cognitoCredProvider != null && cognitoToken != null) {
+          Map logins = new HashMap<String, String>();
+          logins.put(cognitoCredProvider, cognitoToken);
+          cognitoCredentialsProvider.withLogins(logins);
+        }
+        credentialsProvider = cognitoCredentialsProvider;
         break;
       // TODO: support STS
       default:
@@ -235,6 +244,8 @@ public class RNS3TransferUtility extends ReactContextBaseJavaModule {
       "accelerate_mode_enabled",
       options.hasKey("accelerate_mode_enabled") && options.getBoolean("accelerate_mode_enabled")
     );
+    credentialsOptions.put("cognito_cred_provider", options.getString("cognito_cred_provider"));
+    credentialsOptions.put("cognito_token", options.getString("cognito_token"));
     promise.resolve(setup(credentialsOptions));
   }
 
