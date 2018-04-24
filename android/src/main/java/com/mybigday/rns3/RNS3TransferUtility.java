@@ -174,7 +174,7 @@ public class RNS3TransferUtility extends ReactContextBaseJavaModule {
         String cognitoCredProvider = (String) credentialsOptions.get("cognito_cred_provider");
         String cognitoToken = (String) credentialsOptions.get("cognito_token");
         if (cognitoCredProvider != null && cognitoToken != null) {
-          Map logins = new HashMap<String, String>();
+          Map<String, String> logins = new HashMap<String, String>();
           logins.put(cognitoCredProvider, cognitoToken);
           cognitoCredentialsProvider.withLogins(logins);
         }
