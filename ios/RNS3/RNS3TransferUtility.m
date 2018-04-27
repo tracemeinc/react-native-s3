@@ -90,7 +90,7 @@ static NSString* instanceKey = @"RNS3TransferUtility";
      * We need keep last instance, otherwise JS reload will break background tasks
      * If you need setup again with different config, just set `remember_last_instance` to false
      */
-    BOOL rememberLastInstance = options[@"remember_last_instance"];
+    BOOL rememberLastInstance =  ((NSNumber*)options[@"remember_last_instance"]).boolValue;
     AWSS3TransferUtility *transferUtility = [AWSS3TransferUtility S3TransferUtilityForKey:instanceKey];
     if (rememberLastInstance && transferUtility) {
         return YES;
